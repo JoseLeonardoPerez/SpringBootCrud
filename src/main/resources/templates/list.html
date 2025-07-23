@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${title}">Title</title>
+</head>
+<body>
+
+<div>
+    <h3 th:text="${title}"></h3>
+
+    <a th:href="@{/form}" th:text="'crear user (+)'"></a>
+    <div th:text="'no hay usuarios en el sistema!'" th:if="${#lists.isEmpty(users)}"></div>
+    <table th:if="${not #lists.isEmpty(users)}">
+        <thead>
+          <tr>
+              <th>id</th>
+              <th>name</th>
+              <th>lastname</th>
+              <th>email</th>
+              <th>created at</th>
+              <th>edit</th>
+              <th>remove</th>
+          </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="user: ${users}">
+            <td th:text="${user.id}"></td>
+            <td th:text="${user.name}"></td>
+            <td th:text="${user.lastname}"></td>
+            <td th:text="${user.email}"></td>
+            <td th:text="${user.createdAt}"></td>
+            <td><a th:href="@{/form/} + ${user.id}">edit</a></td>
+            <td><a th:href="@{/delete/} + ${user.id}" onclick="return confirm('Esta seguro que desea eliminar?')">deleite</a></td>
+
+
+        </tr>
+        </tbody>
+
+
+    </table>
+</div>
+</body>
+</html>
