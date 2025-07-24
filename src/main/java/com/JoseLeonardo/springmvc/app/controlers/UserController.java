@@ -25,11 +25,11 @@ public class UserController {
     public String viewData(Model model){
         model.addAttribute("title", "Hola Mundo SpringBoot!!!");
         model.addAttribute("message", "Esta es una aplicación de ejemplo usando Spring Boot!!!");
-        model.addAttribute("user", new User("Andres", "Guzman"));
+        model.addAttribute("user", new User("José Leonardo", "Pérez"));
         return "view"; //view es el nombre de la plantilla (el archivo html dentro de templates, lo que retorna el metodo debe ser la plantilla)//;
     }
 
-    @GetMapping("/")
+    @GetMapping({"", "/"})
     public String list(Model model){
         model.addAttribute("title", "Listado de Usuarios");
         model.addAttribute("users", service.findAll());
