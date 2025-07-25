@@ -2,18 +2,19 @@ package com.JoseLeonardo.springmvc.app.controlers;
 
 import com.JoseLeonardo.springmvc.app.entities.User;
 import com.JoseLeonardo.springmvc.app.services.UserService;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Optional;
 
 @Controller
 @RequestMapping("/users")
+@SessionAttributes({"user"})
 public class UserController {
 
     private final UserService service;
@@ -60,10 +61,16 @@ public class UserController {
     }
 
     @PostMapping
-    public String form(User user, Model model, RedirectAttributes redirect){
+    public String form(@Valid User user, BindingResult result, Model model, RedirectAttributes redirect, SessionStatus status){
+
+        if(result.hasErrors()){
+            model.addAttribute("title", "Validando formulario");
+            return "form";
+        }
         String message = (user.getId() != null && user.getId() >0)? "El usuario " + user.getName() + " Se ha actualizado con exito!" :"El usuario " + user.getName() + " Se ha creado con exito!";
         service.save(user);
-        redirect.addFlashAttribute("Success", message);
+        status.setComplete();
+        redirect.addFlashAttribute("success", message);
 
         return "redirect:/users";
     }
@@ -72,7 +79,7 @@ public class UserController {
     public String delete(@PathVariable Long id, RedirectAttributes redirect){
         Optional<User> optionalUser = service.findById(id);
         if (optionalUser.isPresent()) {
-            redirect.addFlashAttribute("Success", "El usuario " + optionalUser.get().getName() + " Se ha eliminado con exito!");
+            redirect.addFlashAttribute("success", "El usuario " + optionalUser.get().getName() + " Se ha eliminado con exito!");
             service.remove(id);
             return "redirect:/users";
         }
